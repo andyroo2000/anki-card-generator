@@ -21,6 +21,7 @@ function loadSettingsIntoForm() {
     document.getElementById('aws-access-key').value = settings.awsAccessKeyId || '';
     document.getElementById('aws-secret-key').value = settings.awsSecretAccessKey || '';
     document.getElementById('aws-region').value = settings.awsRegion || 'us-east-1';
+    document.getElementById('custom-prompt').value = settings.customSystemPrompt || '';
   }
 }
 
@@ -30,6 +31,7 @@ const clearSettingsBtn = document.getElementById('clear-settings-btn');
 const settingsMessage = document.getElementById('settings-message');
 
 saveSettingsBtn.addEventListener('click', () => {
+  const customPrompt = document.getElementById('custom-prompt').value.trim();
   const settings = {
     openaiApiKey: document.getElementById('openai-key').value.trim(),
     nanoBananaApiKey: document.getElementById('nanobanana-key').value.trim(),
@@ -37,6 +39,11 @@ saveSettingsBtn.addEventListener('click', () => {
     awsSecretAccessKey: document.getElementById('aws-secret-key').value.trim(),
     awsRegion: document.getElementById('aws-region').value.trim() || 'us-east-1',
   };
+  
+  // Only include customSystemPrompt if it's not empty
+  if (customPrompt) {
+    settings.customSystemPrompt = customPrompt;
+  }
   
   saveSettings(settings);
   
@@ -53,6 +60,7 @@ clearSettingsBtn.addEventListener('click', () => {
   document.getElementById('aws-access-key').value = '';
   document.getElementById('aws-secret-key').value = '';
   document.getElementById('aws-region').value = 'us-east-1';
+  document.getElementById('custom-prompt').value = '';
   
   settingsMessage.innerHTML = '<div style="color: var(--success); margin-top: 1rem;">✓ Settings cleared</div>';
   setTimeout(() => {
@@ -108,6 +116,7 @@ singleProcessBtn.addEventListener('click', async () => {
     const credentials = settings ? {
       openaiApiKey: settings.openaiApiKey,
       nanoBananaApiKey: settings.nanoBananaApiKey,
+      customSystemPrompt: settings.customSystemPrompt,
       awsCredentials: {
         accessKeyId: settings.awsAccessKeyId,
         secretAccessKey: settings.awsSecretAccessKey,
@@ -228,6 +237,7 @@ uploadBtn.addEventListener('click', async () => {
     const credentials = {
       openaiApiKey: settings.openaiApiKey,
       nanoBananaApiKey: settings.nanoBananaApiKey,
+      customSystemPrompt: settings.customSystemPrompt,
       awsCredentials: {
         accessKeyId: settings.awsAccessKeyId,
         secretAccessKey: settings.awsSecretAccessKey,

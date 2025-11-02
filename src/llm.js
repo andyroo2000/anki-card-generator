@@ -21,10 +21,11 @@ function loadSystemPrompt() {
  * Call the LLM with the input and return structured JSON
  * @param {string} input - Japanese input (word or sentence)
  * @param {string} [apiKey] - OpenAI API key (optional, falls back to env var)
+ * @param {string} [customSystemPrompt] - Custom system prompt (optional, falls back to file)
  * @returns {Promise<Object>} Structured JSON matching the contract
  */
-export async function callLLM(input, apiKey) {
-  const systemPrompt = loadSystemPrompt();
+export async function callLLM(input, apiKey, customSystemPrompt) {
+  const systemPrompt = customSystemPrompt || loadSystemPrompt();
   
   // Use provided API key or fall back to environment variable
   const key = apiKey || process.env.OPENAI_API_KEY;

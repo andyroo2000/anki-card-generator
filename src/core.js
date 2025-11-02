@@ -25,6 +25,7 @@ const __dirname = dirname(__filename);
  * @param {Object} [credentials] - Optional API credentials
  * @param {string} [credentials.openaiApiKey] - OpenAI API key
  * @param {string} [credentials.nanoBananaApiKey] - Nano banana API key
+ * @param {string} [credentials.customSystemPrompt] - Custom system prompt
  * @param {Object} [credentials.awsCredentials] - AWS credentials { accessKeyId, secretAccessKey, region }
  * @returns {Promise<Object>} Full result object with LLM data and media
  */
@@ -45,7 +46,7 @@ export async function processInput(input, onProgress, credentials) {
 
     // Step 2: Call LLM
     if (onProgress) onProgress('llm', 'Calling LLM...');
-    const llmJson = await callLLM(trimmedInput, credentials?.openaiApiKey);
+    const llmJson = await callLLM(trimmedInput, credentials?.openaiApiKey, credentials?.customSystemPrompt);
     if (onProgress) onProgress('llm', `LLM returned: ${llmJson.polite_jp}`);
 
     // Step 3: Generate images
