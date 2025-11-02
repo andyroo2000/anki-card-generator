@@ -9,13 +9,22 @@ A local-first web application that generates Anki-ready study data from Japanese
    npm install
    ```
 
-2. Create a `.env` file with your API keys:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   AWS_ACCESS_KEY_ID=your_aws_access_key_id_here
-   AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key_here
-   AWS_REGION=us-east-1
-   ```
+2. Configure API keys (choose one method):
+   
+   **Option A: Browser Settings (Recommended)**
+   - Start the server: `npm start`
+   - Open `http://localhost:3000`
+   - Go to the Settings tab
+   - Enter your API keys (stored in browser localStorage)
+   
+   **Option B: Environment Variables**
+   - Create a `.env` file with your API keys:
+     ```
+     OPENAI_API_KEY=your_openai_api_key_here
+     AWS_ACCESS_KEY_ID=your_aws_access_key_id_here
+     AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key_here
+     AWS_REGION=us-east-1
+     ```
 
 ## Usage
 
@@ -33,11 +42,12 @@ npm run server
 
 Then open `http://localhost:3000` in your browser.
 
-The web interface provides three main features:
+The web interface provides four main features:
 
 1. **Single Input** - Paste a word or sentence, click "Process" to generate a card
 2. **Bulk Upload** - Upload a CSV/txt file with one input per line for batch processing
 3. **Browse Cards** - View all generated cards in a visual browser with search
+4. **Settings** - Configure API keys (alternative to .env file)
 
 ### CLI Usage
 
