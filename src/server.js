@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import dotenv from 'dotenv';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { processInput } from './core.js';
@@ -159,6 +160,21 @@ app.get('/api/stats', (req, res) => {
     });
   } catch (error) {
     console.error('Error getting stats:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/default-prompt
+ * Get the default system prompt
+ */
+app.get('/api/default-prompt', (req, res) => {
+  try {
+    const promptPath = join(__dirname, 'prompts', 'jp-anki-system.txt');
+    const prompt = readFileSync(promptPath, 'utf-8');
+    res.json({ prompt });
+  } catch (error) {
+    console.error('Error getting default prompt:', error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -13,7 +13,7 @@ function clearSettings() {
 }
 
 // Load settings on page load and populate form
-function loadSettingsIntoForm() {
+async function loadSettingsIntoForm() {
   const settings = getSettings();
   if (settings) {
     document.getElementById('openai-key').value = settings.openaiApiKey || '';
@@ -22,6 +22,17 @@ function loadSettingsIntoForm() {
     document.getElementById('aws-secret-key').value = settings.awsSecretAccessKey || '';
     document.getElementById('aws-region').value = settings.awsRegion || 'us-east-1';
     document.getElementById('custom-prompt').value = settings.customSystemPrompt || '';
+  } else {
+    // Load default prompt if no saved prompt
+    try {
+      const response = await fetch('/api/default-prompt');
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('custom-prompt').value = data.prompt;
+      }
+    } catch (error) {
+      console.error('Error loading default prompt:', error);
+    }
   }
 }
 
@@ -38,12 +49,8 @@ saveSettingsBtn.addEventListener('click', () => {
     awsAccessKeyId: document.getElementById('aws-access-key').value.trim(),
     awsSecretAccessKey: document.getElementById('aws-secret-key').value.trim(),
     awsRegion: document.getElementById('aws-region').value.trim() || 'us-east-1',
+    customSystemPrompt: customPrompt,
   };
-  
-  // Only include customSystemPrompt if it's not empty
-  if (customPrompt) {
-    settings.customSystemPrompt = customPrompt;
-  }
   
   saveSettings(settings);
   
@@ -53,14 +60,25 @@ saveSettingsBtn.addEventListener('click', () => {
   }, 3000);
 });
 
-clearSettingsBtn.addEventListener('click', () => {
+clearSettingsBtn.addEventListener('click', async () => {
   clearSettings();
   document.getElementById('openai-key').value = '';
   document.getElementById('nanobanana-key').value = '';
   document.getElementById('aws-access-key').value = '';
   document.getElementById('aws-secret-key').value = '';
   document.getElementById('aws-region').value = 'us-east-1';
-  document.getElementById('custom-prompt').value = '';
+  
+  // Reload default prompt
+  try {
+    const response = await fetch('/api/default-prompt');
+    if (response.ok) {
+      const data = await response.json();
+      document.getElementById('custom-prompt').value = data.prompt;
+    }
+  } catch (error) {
+    console.error('Error loading default prompt:', error);
+    document.getElementById('custom-prompt').value = '';
+  }
   
   settingsMessage.innerHTML = '<div style="color: var(--success); margin-top: 1rem;">✓ Settings cleared</div>';
   setTimeout(() => {
