@@ -21,6 +21,7 @@ A local-first web application that generates Anki-ready study data from Japanese
    - Create a `.env` file with your API keys:
      ```
      OPENAI_API_KEY=your_openai_api_key_here
+     NANO_BANANA_API_KEY=your_nano_banana_api_key_here
      AWS_ACCESS_KEY_ID=your_aws_access_key_id_here
      AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key_here
      AWS_REGION=us-east-1
@@ -82,7 +83,7 @@ The CSV contains 12 columns matching Anki field names:
 - **Card Browser** - Visual browsing of all generated cards with search
 - **Generates both polite (丁寧語) and casual (普通形) forms**
 - **Kana with word separators (・)**
-- **Image generation** with tense-appropriate styling
+- **Image generation** via Nano Banana API with tense-appropriate styling
 - **Japanese TTS** via AWS Polly
 - **Local-first** - all media downloaded for Anki import
 - **RESTful API** - programmable access to all features

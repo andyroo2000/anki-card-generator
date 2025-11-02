@@ -17,6 +17,7 @@ function loadSettingsIntoForm() {
   const settings = getSettings();
   if (settings) {
     document.getElementById('openai-key').value = settings.openaiApiKey || '';
+    document.getElementById('nanobanana-key').value = settings.nanoBananaApiKey || '';
     document.getElementById('aws-access-key').value = settings.awsAccessKeyId || '';
     document.getElementById('aws-secret-key').value = settings.awsSecretAccessKey || '';
     document.getElementById('aws-region').value = settings.awsRegion || 'us-east-1';
@@ -31,6 +32,7 @@ const settingsMessage = document.getElementById('settings-message');
 saveSettingsBtn.addEventListener('click', () => {
   const settings = {
     openaiApiKey: document.getElementById('openai-key').value.trim(),
+    nanoBananaApiKey: document.getElementById('nanobanana-key').value.trim(),
     awsAccessKeyId: document.getElementById('aws-access-key').value.trim(),
     awsSecretAccessKey: document.getElementById('aws-secret-key').value.trim(),
     awsRegion: document.getElementById('aws-region').value.trim() || 'us-east-1',
@@ -47,6 +49,7 @@ saveSettingsBtn.addEventListener('click', () => {
 clearSettingsBtn.addEventListener('click', () => {
   clearSettings();
   document.getElementById('openai-key').value = '';
+  document.getElementById('nanobanana-key').value = '';
   document.getElementById('aws-access-key').value = '';
   document.getElementById('aws-secret-key').value = '';
   document.getElementById('aws-region').value = 'us-east-1';
@@ -104,6 +107,7 @@ singleProcessBtn.addEventListener('click', async () => {
     const settings = getSettings();
     const credentials = settings ? {
       openaiApiKey: settings.openaiApiKey,
+      nanoBananaApiKey: settings.nanoBananaApiKey,
       awsCredentials: {
         accessKeyId: settings.awsAccessKeyId,
         secretAccessKey: settings.awsSecretAccessKey,
@@ -223,6 +227,7 @@ uploadBtn.addEventListener('click', async () => {
   if (settings) {
     const credentials = {
       openaiApiKey: settings.openaiApiKey,
+      nanoBananaApiKey: settings.nanoBananaApiKey,
       awsCredentials: {
         accessKeyId: settings.awsAccessKeyId,
         secretAccessKey: settings.awsSecretAccessKey,

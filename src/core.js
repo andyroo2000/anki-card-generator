@@ -24,6 +24,7 @@ const __dirname = dirname(__filename);
  * @param {ProgressCallback} [onProgress] - Optional progress callback
  * @param {Object} [credentials] - Optional API credentials
  * @param {string} [credentials.openaiApiKey] - OpenAI API key
+ * @param {string} [credentials.nanoBananaApiKey] - Nano banana API key
  * @param {Object} [credentials.awsCredentials] - AWS credentials { accessKeyId, secretAccessKey, region }
  * @returns {Promise<Object>} Full result object with LLM data and media
  */
@@ -53,13 +54,13 @@ export async function processInput(input, onProgress, credentials) {
 
     if (onProgress) onProgress('image', 'Generating polite image...');
     const imagePolitePath = join(mediaDir, `${id}_polite.png`);
-    await generateImage(llmJson.img_prompt_polite, imagePolitePath, credentials?.openaiApiKey);
+    await generateImage(llmJson.img_prompt_polite, imagePolitePath, credentials?.nanoBananaApiKey);
     mediaPaths.imagePolite = imagePolitePath;
 
     if (llmJson.has_polite_and_casual && llmJson.img_prompt_casual) {
       if (onProgress) onProgress('image', 'Generating casual image...');
       const imageCasualPath = join(mediaDir, `${id}_casual.png`);
-      await generateImage(llmJson.img_prompt_casual, imageCasualPath, credentials?.openaiApiKey);
+      await generateImage(llmJson.img_prompt_casual, imageCasualPath, credentials?.nanoBananaApiKey);
       mediaPaths.imageCasual = imageCasualPath;
     }
 
