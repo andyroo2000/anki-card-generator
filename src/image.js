@@ -5,17 +5,25 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 /**
  * Generate an image from a prompt and save it locally
  * @param {string} prompt - Image generation prompt
  * @param {string} outputPath - Full path where to save the image (e.g., media/jp_0001_polite.png)
+ * @param {string} [apiKey] - OpenAI API key (optional, falls back to env var)
  * @returns {Promise<string>} Local file path
  */
-export async function generateImage(prompt, outputPath) {
+export async function generateImage(prompt, outputPath, apiKey) {
+  // Use provided API key or fall back to environment variable
+  const key = apiKey || process.env.OPENAI_API_KEY;
+  
+  if (!key) {
+    throw new Error('OpenAI API key is required for image generation');
+  }
+  
+  const openai = new OpenAI({
+    apiKey: key,
+  });
+  
   try {
     // Ensure directory exists
     const dir = dirname(outputPath);

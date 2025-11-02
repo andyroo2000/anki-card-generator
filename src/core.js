@@ -22,9 +22,12 @@ const __dirname = dirname(__filename);
  * Main pipeline: process a single Japanese input
  * @param {string} input - Japanese input (word or sentence)
  * @param {ProgressCallback} [onProgress] - Optional progress callback
+ * @param {Object} [credentials] - Optional API credentials
+ * @param {string} [credentials.openaiApiKey] - OpenAI API key
+ * @param {Object} [credentials.awsCredentials] - AWS credentials { accessKeyId, secretAccessKey, region }
  * @returns {Promise<Object>} Full result object with LLM data and media
  */
-export async function processInput(input, onProgress) {
+export async function processInput(input, onProgress, credentials) {
   const trimmedInput = input.trim();
   
   if (!trimmedInput) {
@@ -41,7 +44,7 @@ export async function processInput(input, onProgress) {
 
     // Step 2: Call LLM
     if (onProgress) onProgress('llm', 'Calling LLM...');
-    const llmJson = await callLLM(trimmedInput);
+    const llmJson = await callLLM(trimmedInput, credentials?.openaiApiKey);
     if (onProgress) onProgress('llm', `LLM returned: ${llmJson.polite_jp}`);
 
     // Step 3: Generate images
@@ -50,26 +53,26 @@ export async function processInput(input, onProgress) {
 
     if (onProgress) onProgress('image', 'Generating polite image...');
     const imagePolitePath = join(mediaDir, `${id}_polite.png`);
-    await generateImage(llmJson.img_prompt_polite, imagePolitePath);
+    await generateImage(llmJson.img_prompt_polite, imagePolitePath, credentials?.openaiApiKey);
     mediaPaths.imagePolite = imagePolitePath;
 
     if (llmJson.has_polite_and_casual && llmJson.img_prompt_casual) {
       if (onProgress) onProgress('image', 'Generating casual image...');
       const imageCasualPath = join(mediaDir, `${id}_casual.png`);
-      await generateImage(llmJson.img_prompt_casual, imageCasualPath);
+      await generateImage(llmJson.img_prompt_casual, imageCasualPath, credentials?.openaiApiKey);
       mediaPaths.imageCasual = imageCasualPath;
     }
 
     // Step 4: Generate audio
     if (onProgress) onProgress('audio', 'Generating polite audio...');
     const audioPolitePath = join(mediaDir, `${id}_polite.mp3`);
-    await generateAudio(llmJson.polite_jp, audioPolitePath);
+    await generateAudio(llmJson.polite_jp, audioPolitePath, 'Takumi', credentials?.awsCredentials);
     mediaPaths.audioPolite = audioPolitePath;
 
     if (llmJson.has_polite_and_casual && llmJson.casual_jp) {
       if (onProgress) onProgress('audio', 'Generating casual audio...');
       const audioCasualPath = join(mediaDir, `${id}_casual.mp3`);
-      await generateAudio(llmJson.casual_jp, audioCasualPath);
+      await generateAudio(llmJson.casual_jp, audioCasualPath, 'Takumi', credentials?.awsCredentials);
       mediaPaths.audioCasual = audioCasualPath;
     }
 

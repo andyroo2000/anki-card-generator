@@ -37,13 +37,13 @@ const upload = multer({ storage: multer.memoryStorage() });
  */
 app.post('/api/process', async (req, res) => {
   try {
-    const { input } = req.body;
+    const { input, credentials } = req.body;
 
     if (!input || !input.trim()) {
       return res.status(400).json({ error: 'Input is required' });
     }
 
-    const result = await processInput(input);
+    const result = await processInput(input, null, credentials);
     
     if (!result) {
       return res.status(400).json({ error: 'Processing failed: empty input' });
@@ -66,6 +66,9 @@ app.post('/api/bulk-upload', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'File is required' });
     }
 
+    // Get credentials from request body if provided
+    const credentials = req.body.credentials ? JSON.parse(req.body.credentials) : null;
+
     const content = req.file.buffer.toString('utf-8');
     const lines = content.split('\n').filter(line => line.trim());
 
@@ -79,7 +82,7 @@ app.post('/api/bulk-upload', upload.single('file'), async (req, res) => {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       try {
-        const result = await processInput(line);
+        const result = await processInput(line, null, credentials);
         if (result) {
           results.push({ input: line, result });
         }

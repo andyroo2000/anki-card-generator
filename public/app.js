@@ -1,3 +1,65 @@
+// Settings Management
+function getSettings() {
+  const settings = localStorage.getItem('anki_settings');
+  return settings ? JSON.parse(settings) : null;
+}
+
+function saveSettings(settings) {
+  localStorage.setItem('anki_settings', JSON.stringify(settings));
+}
+
+function clearSettings() {
+  localStorage.removeItem('anki_settings');
+}
+
+// Load settings on page load and populate form
+function loadSettingsIntoForm() {
+  const settings = getSettings();
+  if (settings) {
+    document.getElementById('openai-key').value = settings.openaiApiKey || '';
+    document.getElementById('aws-access-key').value = settings.awsAccessKeyId || '';
+    document.getElementById('aws-secret-key').value = settings.awsSecretAccessKey || '';
+    document.getElementById('aws-region').value = settings.awsRegion || 'us-east-1';
+  }
+}
+
+// Settings form handling
+const saveSettingsBtn = document.getElementById('save-settings-btn');
+const clearSettingsBtn = document.getElementById('clear-settings-btn');
+const settingsMessage = document.getElementById('settings-message');
+
+saveSettingsBtn.addEventListener('click', () => {
+  const settings = {
+    openaiApiKey: document.getElementById('openai-key').value.trim(),
+    awsAccessKeyId: document.getElementById('aws-access-key').value.trim(),
+    awsSecretAccessKey: document.getElementById('aws-secret-key').value.trim(),
+    awsRegion: document.getElementById('aws-region').value.trim() || 'us-east-1',
+  };
+  
+  saveSettings(settings);
+  
+  settingsMessage.innerHTML = '<div style="color: var(--success); margin-top: 1rem;">✓ Settings saved successfully!</div>';
+  setTimeout(() => {
+    settingsMessage.innerHTML = '';
+  }, 3000);
+});
+
+clearSettingsBtn.addEventListener('click', () => {
+  clearSettings();
+  document.getElementById('openai-key').value = '';
+  document.getElementById('aws-access-key').value = '';
+  document.getElementById('aws-secret-key').value = '';
+  document.getElementById('aws-region').value = 'us-east-1';
+  
+  settingsMessage.innerHTML = '<div style="color: var(--success); margin-top: 1rem;">✓ Settings cleared</div>';
+  setTimeout(() => {
+    settingsMessage.innerHTML = '';
+  }, 3000);
+});
+
+// Load settings on page load
+loadSettingsIntoForm();
+
 // Tab switching
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
@@ -39,10 +101,20 @@ singleProcessBtn.addEventListener('click', async () => {
   singleProcessBtn.disabled = true;
   
   try {
+    const settings = getSettings();
+    const credentials = settings ? {
+      openaiApiKey: settings.openaiApiKey,
+      awsCredentials: {
+        accessKeyId: settings.awsAccessKeyId,
+        secretAccessKey: settings.awsSecretAccessKey,
+        region: settings.awsRegion,
+      },
+    } : null;
+    
     const response = await fetch('/api/process', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input }),
+      body: JSON.stringify({ input, credentials }),
     });
     
     if (!response.ok) {
@@ -145,6 +217,20 @@ uploadBtn.addEventListener('click', async () => {
   
   const formData = new FormData();
   formData.append('file', file);
+  
+  // Add credentials to form data if available
+  const settings = getSettings();
+  if (settings) {
+    const credentials = {
+      openaiApiKey: settings.openaiApiKey,
+      awsCredentials: {
+        accessKeyId: settings.awsAccessKeyId,
+        secretAccessKey: settings.awsSecretAccessKey,
+        region: settings.awsRegion,
+      },
+    };
+    formData.append('credentials', JSON.stringify(credentials));
+  }
   
   try {
     const response = await fetch('/api/bulk-upload', {

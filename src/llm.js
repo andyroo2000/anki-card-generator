@@ -9,10 +9,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 /**
  * Load the system prompt from file
  */
@@ -24,10 +20,22 @@ function loadSystemPrompt() {
 /**
  * Call the LLM with the input and return structured JSON
  * @param {string} input - Japanese input (word or sentence)
+ * @param {string} [apiKey] - OpenAI API key (optional, falls back to env var)
  * @returns {Promise<Object>} Structured JSON matching the contract
  */
-export async function callLLM(input) {
+export async function callLLM(input, apiKey) {
   const systemPrompt = loadSystemPrompt();
+  
+  // Use provided API key or fall back to environment variable
+  const key = apiKey || process.env.OPENAI_API_KEY;
+  
+  if (!key) {
+    throw new Error('OpenAI API key is required');
+  }
+  
+  const openai = new OpenAI({
+    apiKey: key,
+  });
   
   try {
     const completion = await openai.chat.completions.create({
