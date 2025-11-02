@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Anki Card Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎴 Japanese Anki Card Generator</h1>
+      <p class="subtitle">Generate beautiful Anki cards with images, audio, and translations</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="single">Single Input</button>
+      <button class="tab-btn" data-tab="bulk">Bulk Upload</button>
+      <button class="tab-btn" data-tab="browse">Browse Cards</button>
+    </nav>
+
+    <!-- Single Input Tab -->
+    <div class="tab-content active" id="single">
+      <div class="card">
+        <h2>Generate Single Card</h2>
+        <div class="form-group">
+          <label for="japanese-input">Japanese Input (word or sentence)</label>
+          <textarea id="japanese-input" rows="3" placeholder="明日東京へ行きます。"></textarea>
+        </div>
+        <button id="process-btn" class="btn btn-primary">Process</button>
+        <div id="single-loading" class="loading hidden">
+          <div class="spinner"></div>
+          <p>Processing...</p>
+        </div>
+        <div id="single-result" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- Bulk Upload Tab -->
+    <div class="tab-content" id="bulk">
+      <div class="card">
+        <h2>Bulk Upload</h2>
+        <p class="help-text">Upload a CSV or text file with one Japanese input per line</p>
+        <div class="form-group">
+          <label for="file-input">Select File</label>
+          <input type="file" id="file-input" accept=".csv,.txt">
+        </div>
+        <button id="upload-btn" class="btn btn-primary" disabled>Upload & Process</button>
+        <div id="bulk-loading" class="loading hidden">
+          <div class="spinner"></div>
+          <div id="bulk-progress">
+            <p>Processing... <span id="bulk-counter">0 / 0</span></p>
+          </div>
+        </div>
+        <div id="bulk-result" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- Browse Cards Tab -->
+    <div class="tab-content" id="browse">
+      <div class="card">
+        <div class="browse-header">
+          <h2>Browse Cards</h2>
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search cards...">
+            <span class="search-icon">🔍</span>
+          </div>
+        </div>
+        <div id="browse-stats" class="stats"></div>
+        <div id="card-grid" class="card-grid"></div>
+        <div id="pagination" class="pagination hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Detail Modal -->
+  <div id="card-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
+
