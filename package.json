@@ -1,0 +1,20 @@
+{
+  "name": "anki-card-generator",
+  "version": "1.0.0",
+  "description": "A local-first tool to generate Anki-ready study data from Japanese input",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": ["anki", "japanese", "study", "flashcards"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^4.20.0",
+    "@aws-sdk/client-polly": "^3.450.0",
+    "csv-writer": "^1.6.0",
+    "dotenv": "^16.3.1"
+  }
+}
+
